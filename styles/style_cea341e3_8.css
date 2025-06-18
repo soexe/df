@@ -1,0 +1,76 @@
+@font-face {
+    font-family: "lg";
+    src: url(../fonts/lg_6.woff);
+    }
+@-webkit-keyframes lg-right-end {
+    0% {
+        left: 0
+        } 50% {
+        left: -30px
+        } 100% {
+        left: 0
+        }
+    }
+@-moz-keyframes lg-right-end {
+    0% {
+        left: 0
+        } 50% {
+        left: -30px
+        } 100% {
+        left: 0
+        }
+    }
+@-ms-keyframes lg-right-end {
+    0% {
+        left: 0
+        } 50% {
+        left: -30px
+        } 100% {
+        left: 0
+        }
+    }
+@keyframes lg-right-end {
+    0% {
+        left: 0
+        } 50% {
+        left: -30px
+        } 100% {
+        left: 0
+        }
+    }
+@-webkit-keyframes lg-left-end {
+    0% {
+        left: 0
+        } 50% {
+        left: 30px
+        } 100% {
+        left: 0
+        }
+    }
+@-moz-keyframes lg-left-end {
+    0% {
+        left: 0
+        } 50% {
+        left: 30px
+        } 100% {
+        left: 0
+        }
+    }
+@-ms-keyframes lg-left-end {
+    0% {
+        left: 0
+        } 50% {
+        left: 30px
+        } 100% {
+        left: 0
+        }
+    }
+@keyframes lg-left-end {
+    0% {
+        left: 0
+        } 50% {
+        left: 30px
+        } 100% {
+        left: 0
+        }
+    }

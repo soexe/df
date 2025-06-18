@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px}
+        .admin-container{max-width:1200px;margin:0 auto;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-radius:20px;padding:30px;box-shadow:0 20px 40px rgba(0,0,0,.1);border:1px solid rgba(255,255,255,.2)}
+        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;padding-bottom:20px;border-bottom:2px solid #f0f0f0}
+        .header h1{color:#333;font-size:32px;font-weight:700}
+        .logout-btn{background:#dc3545;color:white;border:none;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600;transition:all .3s ease}
+        .logout-btn:hover{background:#c82333;transform:translateY(-2px)}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin-bottom:30px}
+        .stat-card{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:25px;border-radius:15px;text-align:center;box-shadow:0 10px 20px rgba(102,126,234,.3)}
+        .stat-card h3{font-size:14px;margin-bottom:10px;opacity:.9}
+        .stat-card .value{font-size:32px;font-weight:700;margin-bottom:5px}
+        .stat-card .label{font-size:12px;opacity:.8}
+        .admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:30px}
+        .admin-section{background:#f8f9fa;border-radius:15px;padding:25px;border:1px solid #e9ecef}
+        .section-header{display:flex;align-items:center;margin-bottom:20px;padding-bottom:15px;border-bottom:2px solid #e9ecef}
+        .section-header h2{color:#333;font-size:20px;font-weight:600;margin-left:10px}
+        .form-group{margin-bottom:20px}
+        .form-group label{display:block;margin-bottom:8px;color:#333;font-weight:500;font-size:14px}
+        .form-group input{width:100%;padding:12px 16px;border:2px solid #e1e5e9;border-radius:10px;font-size:16px;transition:all .3s ease;background:white}
+        .form-group input:focus{outline:none;border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.1)}
+        .submit-btn{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;padding:12px 24px;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:all .3s ease}
+        .submit-btn:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(102,126,234,.3)}
+        .current-value{background:#e3f2fd;border:1px solid #2196f3;border-radius:8px;padding:12px;margin-bottom:15px;font-family:monospace;font-size:14px;word-break:break-all}
+        .file-input-wrapper{position:relative;display:inline-block;width:100%}
+        .file-input{position:absolute;left:-9999px}
+        .file-input-label{display:block;padding:12px 16px;background:#f8f9fa;border:2px dashed #dee2e6;border-radius:10px;text-align:center;cursor:pointer;transition:all .3s ease;font-size:14px;color:#666}
+        .file-input-label:hover{border-color:#667eea;background:#f0f4ff}
+        .success-message{background:#d4edda;color:#155724;padding:15px;border-radius:8px;margin-bottom:20px;border:1px solid #c3e6cb;display:{{success_display}}}
+        .reload-section{background:#fff3cd;border:1px solid #ffeaa7;border-radius:15px;padding:25px;text-align:center}
+        .reload-section h2{color:#856404;margin-bottom:15px}
+        .reload-btn{background:#ffc107;color:#212529;border:none;padding:15px 30px;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:all .3s ease}
+        .reload-btn:hover{background:#e0a800;transform:translateY(-2px)}
+        .qr-preview{margin-top:15px;text-align:center}
+        .qr-preview img{max-width:200px;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,.1)}
+        @media (max-width:768px){.admin-container{padding:20px}.header{flex-direction:column;gap:15px;text-align:center}.header h1{font-size:24px}.admin-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="header">
+            <h1>🔧 Admin Panel</h1>
+            <a href="{{url_for('admin_logout')}}" class="logout-btn">🚪 Logout</a>
+        </div>
+        
+        {%if success_message%}
+        <div class="success-message">✅ {{success_message}}</div>
+        {%endif%}
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>👥 Unique Users</h3>
+                <div class="value">{{unique_users}}</div>
+                <div class="label">Total unique visitors</div>
+            </div>
+            <div class="stat-card">
+                <h3>👁️ Total Views</h3>
+                <div class="value">{{total_views}}</div>
+                <div class="label">Page views</div>
+            </div>
+        </div>
+        
+        <div class="admin-grid">
+            <div class="admin-section">
+                <div class="section-header">
+                    <span>💰</span>
+                    <h2>Wallet Management</h2>
+                </div>
+                
+                <div class="current-value">
+                    <strong>Current Wallet:</strong><br>
+                    {{current_wallet}}
+                </div>
+                
+                <form method="POST" action="{{url_for('update_wallet')}}">
+                    <div class="form-group">
+                        <label for="wallet_address">New Wallet Address</label>
+                        <input type="text" id="wallet_address" name="wallet_address" placeholder="rXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" required>
+                    </div>
+                    <button type="submit" class="submit-btn">💾 Update Wallet</button>
+                </form>
+            </div>
+            
+            <div class="admin-section">
+                <div class="section-header">
+                    <span>📱</span>
+                    <h2>QR Code Management</h2>
+                </div>
+                
+                {{current_qr|safe}}
+                
+                <form method="POST" action="{{url_for('upload_qr')}}" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="qr_file">Upload QR Code</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="qr_file" name="qr_file" class="file-input" accept="image/*" required>
+                            <label for="qr_file" class="file-input-label">📁 Choose QR Code Image (PNG, JPG, JPEG, GIF)</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">📤 Upload QR Code</button>
+                </form>
+            </div>
+            
+            <div class="reload-section">
+                <div class="section-header">
+                    <span>🔄</span>
+                    <h2>Application Management</h2>
+                </div>
+                
+                <p style="margin-bottom:20px;color:#856404">Reload the application to apply changes and restart the server.</p>
+                
+                <form method="POST" action="{{url_for('reload_app')}}" style="display:inline">
+                    <button type="submit" class="reload-btn" onclick="return confirm('Are you sure you want to reload the application?')">🔄 Reload Application</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('qr_file').addEventListener('change',function(e){const file=e.target.files[0];if(file){const label=document.querySelector('.file-input-label');label.textContent=`📁 Selected: ${file.name}`;label.style.background='#e8f5e8';label.style.borderColor='#28a745'}});
+        if(window.history.replaceState){window.history.replaceState(null,null,window.location.href)}
+        document.addEventListener('contextmenu',function(e){e.preventDefault()});
+        document.addEventListener('keydown',function(e){if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I')||(e.ctrlKey&&e.key==='u')){e.preventDefault()}});
+        setTimeout(function(){const successMsg=document.querySelector('.success-message');if(successMsg){successMsg.style.display='none'}},5000);
+    </script>
+</body>
+</html> 
